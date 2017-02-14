@@ -2,18 +2,24 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"github.com/cdelashmutt-pivotal/service-use/apihelper"
 	"github.com/cloudfoundry/cli/plugin"
+        "github.com/cloudfoundry/cli/cf/terminal"
 	"os"
 )
 
 type ServiceUsePlugin struct {
 	apiHelper apihelper.CFAPIHelper
 	cli       plugin.CliConnection
+	ui        terminal.UI
 }
 
 func (cmd *ServiceUsePlugin) ServiceUseCommand(args []string) {
-	fmt.Println("---Getting service instances")
+	username, _ := cmd.cli.Username()
+
+	fmt.Printf("Getting service use information as %s...\n\n",
+		terminal.EntityNameColor(username))
 
 	if nil == cmd.cli {
 		fmt.Println("ERROR: CLI Connection is nil!")
@@ -23,13 +29,16 @@ func (cmd *ServiceUsePlugin) ServiceUseCommand(args []string) {
 	services, _ := cmd.getServices()
 
 	for _, service := range services {
-		fmt.Printf("Service %s was found.\n", service.label)
+		fmt.Printf("Service %s:\n", terminal.EntityNameColor(service.label))
 		for _, serviceplan := range service.plans {
-			fmt.Printf("-Plan: %s\n", serviceplan.name)
+			fmt.Printf(" Plan %s:\n", terminal.EntityNameColor(serviceplan.name))
+
 			for _, serviceinstance := range serviceplan.serviceinstances {
-				fmt.Printf("--Instance: %s\n", serviceinstance.name)
-				fmt.Printf("---Org: %s\n", serviceinstance.space.organization.name)
-				fmt.Printf("---Space: %s\n", serviceinstance.space.name)
+				fmt.Printf("  Org: %s, Space: %s, Instance: %s, Managers: [%s]\n", 
+					terminal.EntityNameColor(serviceinstance.space.organization.name),
+					terminal.EntityNameColor(serviceinstance.space.name),
+					terminal.EntityNameColor(serviceinstance.name),
+					strings.Join(serviceinstance.space.organization.managers, ","))
 			}
 		}
 		fmt.Printf("\n")
@@ -145,6 +154,7 @@ func (cmd *ServiceUsePlugin) getSpace(spaceURL string) (space, error) {
 
 type organization struct {
 	name string
+        managers []string
 }
 
 var orgCache map[string]organization = make(map[string]organization)
@@ -163,10 +173,27 @@ func (cmd *ServiceUsePlugin) actualGetOrganization(organizationURL string) (orga
 		return organization{}, err
 	}
 
+	orgManagers, err := cmd.getOrgManagers(rawOrg.ManagersURL)
+
 	organization := organization{
 		name: rawOrg.Name,
+		managers: orgManagers,
 	}
 	return organization, nil
+}
+
+func (cmd *ServiceUsePlugin) getOrgManagers(orgManagersURL string) ([]string, error) {
+	rawOrgManagers, err := cmd.apiHelper.GetOrgManagers(cmd.cli, orgManagersURL)
+	if nil != err {
+		return nil, err
+	}
+
+	var orgmanagers = []string{}
+
+	for _, om := range rawOrgManagers {
+		orgmanagers = append(orgmanagers, om.UserName)
+	}
+	return orgmanagers, nil
 }
 
 func (cmd *ServiceUsePlugin) Run(cli plugin.CliConnection, args []string) {

@@ -1,0 +1,50 @@
+{
+	"ImportPath": "github.com/cdelashmutt-pivotal/service-use",
+	"GoVersion": "go1.6",
+	"Deps": [
+		{
+			"ImportPath": "github.com/cloudfoundry/cli/cf",
+			"Comment": "v6.18.0-66-g1c0d8f1",
+			"Rev": "1c0d8f1c6d14c26cd6efcdc796570fc4a864b096"
+		},
+		{
+			"ImportPath": "github.com/cloudfoundry/cli/plugin",
+			"Comment": "v6.18.0-66-g1c0d8f1",
+			"Rev": "1c0d8f1c6d14c26cd6efcdc796570fc4a864b096"
+		},
+		{
+			"ImportPath": "github.com/cloudfoundry/cli/vendor/github.com/blang/semver",
+			"Comment": "v6.18.0-66-g1c0d8f1",
+			"Rev": "1c0d8f1c6d14c26cd6efcdc796570fc4a864b096"
+		},
+		{
+			"ImportPath": "github.com/cloudfoundry/cli/vendor/github.com/cloudfoundry/gofileutils/fileutils",
+			"Comment": "v6.18.0-66-g1c0d8f1",
+			"Rev": "1c0d8f1c6d14c26cd6efcdc796570fc4a864b096"
+		},
+		{
+			"ImportPath": "github.com/cloudfoundry/cli/vendor/github.com/fatih/color",
+			"Comment": "v6.18.0-66-g1c0d8f1",
+			"Rev": "1c0d8f1c6d14c26cd6efcdc796570fc4a864b096"
+		},
+		{
+			"ImportPath": "github.com/cloudfoundry/cli/vendor/github.com/nicksnyder/go-i18n/i18n",
+			"Comment": "v6.18.0-66-g1c0d8f1",
+			"Rev": "1c0d8f1c6d14c26cd6efcdc796570fc4a864b096"
+		},
+		{
+			"ImportPath": "github.com/cloudfoundry/cli/vendor/golang.org/x/crypto/ssh/terminal",
+			"Comment": "v6.18.0-66-g1c0d8f1",
+			"Rev": "1c0d8f1c6d14c26cd6efcdc796570fc4a864b096"
+		},
+		{
+			"ImportPath": "github.com/cloudfoundry/cli/vendor/gopkg.in/yaml.v2",
+			"Comment": "v6.18.0-66-g1c0d8f1",
+			"Rev": "1c0d8f1c6d14c26cd6efcdc796570fc4a864b096"
+		},
+		{
+			"ImportPath": "github.com/krujos/cfcurl",
+			"Rev": "320854091a119f220102ba356e507c361562b221"
+		}
+	]
+}

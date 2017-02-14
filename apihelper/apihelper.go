@@ -13,6 +13,7 @@ type CFAPIHelper interface {
 	GetServiceInstances(cli plugin.CliConnection, serviceInstancesURL string) ([]ServiceInstance, error)
 	GetSpace(cli plugin.CliConnection, spaceURL string) (Space, error)
 	GetOrganization(cli plugin.CliConnection, organizationURL string) (Organization, error)
+	GetOrgManagers(cli plugin.CliConnection, orgManagersURL string) ([]OrgManager, error)
 }
 
 //APIHelper implementation
@@ -168,9 +169,10 @@ func (api *APIHelper) GetSpace(cli plugin.CliConnection, spaceURL string) (Space
 type Organization struct {
 	Name string
 	URL  string
+        ManagersURL string
 }
 
-//GetSpace returns a struct that represents critical fields in the JSON
+//GetOrganization returns a struct that represents critical fields in the JSON
 func (api *APIHelper) GetOrganization(cli plugin.CliConnection, organizationURL string) (Organization, error) {
 	theJSON, err := cfcurl.Curl(cli, organizationURL)
 	if nil != err {
@@ -183,7 +185,32 @@ func (api *APIHelper) GetOrganization(cli plugin.CliConnection, organizationURL 
 	organization := Organization{
 		Name: entity["name"].(string),
 		URL:  metadata["url"].(string),
+		ManagersURL: entity["managers_url"].(string),
 	}
 
 	return organization, nil
+}
+
+type OrgManager struct {
+	UserName string
+}
+
+//GetOrgManagers returns critical fields from the returned JSON
+func (api *APIHelper) GetOrgManagers(cli plugin.CliConnection, orgManagersURL string) ([]OrgManager, error) {
+	orgmanagers, err := processPagedResults(cli, orgManagersURL, func(metadata map[string]interface{}, entity map[string]interface{}) interface{} {
+		return OrgManager{
+			UserName:           entity["username"].(string),
+		}
+	})
+
+	retVal := make([]OrgManager, len(orgmanagers))
+	for i := range orgmanagers {
+		retVal[i] = orgmanagers[i].(OrgManager)
+	}
+
+	if nil != err {
+		return nil, err
+	}
+
+	return retVal, nil
 }
