@@ -16,15 +16,28 @@ type ServiceUsePlugin struct {
 }
 
 func (cmd *ServiceUsePlugin) ServiceUseCommand(args []string) {
-	username, _ := cmd.cli.Username()
-
-	fmt.Printf("Getting service use information as %s...\n\n",
-		terminal.EntityNameColor(username))
-
+	
 	if nil == cmd.cli {
 		fmt.Println("ERROR: CLI Connection is nil!")
 		os.Exit(1)
 	}
+
+	loggedIn, err := cmd.cli.IsLoggedIn()
+
+	if nil != err {
+		fmt.Printf("Error checking if you are logged in: %s\n", err)
+		os.Exit(1)
+	}
+	
+	if !loggedIn {
+		fmt.Printf("Please login before trying to run this command.\n")
+		os.Exit(1)
+	}
+
+	username, _ := cmd.cli.Username()
+
+	fmt.Printf("Getting service use information as %s...\n\n",
+		terminal.EntityNameColor(username))
 
 	services, _ := cmd.getServices()
 
