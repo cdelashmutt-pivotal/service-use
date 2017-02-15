@@ -1,1 +1,0 @@
-go install && cf uninstall-plugin ServiceUsePlugin && cf install-plugin C:\Users\grog\go\bin\service-use.exe -f
