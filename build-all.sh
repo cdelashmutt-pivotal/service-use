@@ -39,13 +39,13 @@ WIN32_SHA1=`cat service-use.exe | openssl sha1`
 mkdir -p bin/win32
 mv service-use.exe bin/win32
 
-cat repo-index.yml |
-sed "s/osx-sha1/$OSX_SHA1/" |
-sed "s/win64-sha1/$WIN64_SHA1/" |
-sed "s/win32-sha1/$WIN32_SHA1/" |
-sed "s/linux64-sha1/$LINUX64_SHA1/" |
-sed "s/_TAG_/$TAG/" |
-cat
+#cat repo-index.yml |
+#sed "s/osx-sha1/$OSX_SHA1/" |
+#sed "s/win64-sha1/$WIN64_SHA1/" |
+#sed "s/win32-sha1/$WIN32_SHA1/" |
+#sed "s/linux64-sha1/$LINUX64_SHA1/" |
+#sed "s/_TAG_/$TAG/" |
+#cat
 
 #Final build gives developer a plugin to install
 go build
