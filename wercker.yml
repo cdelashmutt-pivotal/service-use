@@ -37,23 +37,28 @@ build:
       token: $GITHUB_TOKEN
       file: service-use.linux64
       filename: service-use-$GITHUB_RELEASE_VERSION.linux64
+      content-type: application/octet-stream
       
     - github-upload-asset:
       token: $GITHUB_TOKEN
       file: service-use.linux32
       filename: service-use-$GITHUB_RELEASE_VERSION.linux32
+      content-type: application/octet-stream
       
     - github-upload-asset:
       token: $GITHUB_TOKEN
       file: service-use.win64
       filename: service-use-$GITHUB_RELEASE_VERSION.win64
+      content-type: application/octet-stream
       
     - github-upload-asset:
       token: $GITHUB_TOKEN
       file: service-use.win32
       filename: service-use-$GITHUB_RELEASE_VERSION.win32
+      content-type: application/octet-stream
       
     - github-upload-asset:
       token: $GITHUB_TOKEN
       file: service-use.osx
       filename: service-use-$GITHUB_RELEASE_VERSION.osx
+      content-type: application/octet-stream
