@@ -23,14 +23,22 @@ build:
         code: |
           PLUGIN_NAME=service-use
           GOOS=linux GOARCH=amd64 go build -o ${PLUGIN_NAME}.linux64
-          chmod +x ${PLUGIN_NAME}.linux64
           GOOS=linux GOARCH=386 go build -o ${PLUGIN_NAME}.linux32
-          chmod +x ${PLUGIN_NAME}.linux32
           GOOS=windows GOARCH=amd64 go build -o ${PLUGIN_NAME}.win64
           GOOS=windows GOARCH=386 go build -o ${PLUGIN_NAME}.win32
           GOOS=darwin GOARCH=amd64 go build -o ${PLUGIN_NAME}.osx
-          chmod +x ${PLUGIN_NAME}.osx
 
+    # SHA-1 sum for built artifacts
+    - script:
+        name: sha-1
+        code: |
+          PLUGIN_NAME=service-use
+          shasum -a 1 ${PLUGIN_NAME}.linux64
+          shasum -a 1 ${PLUGIN_NAME}.linux32
+          shasum -a 1 ${PLUGIN_NAME}.win64
+          shasum -a 1 ${PLUGIN_NAME}.win32
+          shasum -a 1 ${PLUGIN_NAME}.osx
+    
     - github-create-release:
       token: $GITHUB_TOKEN
       tag: $GITHUB_RELEASE_VERSION
