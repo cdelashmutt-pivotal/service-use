@@ -26,29 +26,33 @@ build:
         name: go test
         code: |
           go test ./...
-release:
-  steps:
+
     - github-create-release:
       token: $GITHUB_TOKEN
       tag: $GITHUB_RELEASE_VERSION
-      title: Service Use Plugin $GITHUB_RELEASE_VERSION
+      title: $GITHUB_RELEASE_VERSION
       draft: true
+      
     - github-upload-asset:
       token: $GITHUB_TOKEN
       file: service-use.linux64
       filename: service-use-$GITHUB_RELEASE_VERSION.linux64
+      
     - github-upload-asset:
       token: $GITHUB_TOKEN
       file: service-use.linux32
       filename: service-use-$GITHUB_RELEASE_VERSION.linux32
+      
     - github-upload-asset:
       token: $GITHUB_TOKEN
       file: service-use.win64
       filename: service-use-$GITHUB_RELEASE_VERSION.win64
+      
     - github-upload-asset:
       token: $GITHUB_TOKEN
       file: service-use.win32
       filename: service-use-$GITHUB_RELEASE_VERSION.win32
+      
     - github-upload-asset:
       token: $GITHUB_TOKEN
       file: service-use.osx
