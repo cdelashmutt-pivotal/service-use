@@ -11,14 +11,33 @@ build:
         code: |
           go get
 
-    # Build the project
+    # Build the project for all the archs
     - script:
         name: go build
         code: |
-          go build ./...
-
+          PLUGIN_NAME=service-use
+          GOOS=linux GOARCH=amd64 go build -o ${PLUGIN_NAME}.linux64 ./...
+          GOOS=linux GOARCH=386 go build -o ${PLUGIN_NAME}.linux32 ./...
+          GOOS=windows GOARCH=amd64 go build -o ${PLUGIN_NAME}.win64 ./...
+          GOOS=windows GOARCH=386 go build -o ${PLUGIN_NAME}.win32 ./...
+          GOOS=darwin GOARCH=amd64 go build -o ${PLUGIN_NAME}.osx ./...
     # Test the project
     - script:
         name: go test
         code: |
           go test ./...
+release:
+  steps:
+    - github-create-release:
+      token: $GITHUB_TOKEN
+      tag: $GITHUB_RELEASE_VERSION
+      title: Application $GITHUB_RELEASE_VERSION
+      draft: true
+    - github-upload-asset:
+      token: $GITHUB_TOKEN
+      file: build.tgz
+      filename: app-$GITHUB_RELEASE_VERSION.tgz
+    - github-upload-asset:
+      token: $GITHUB_TOKEN
+      file: documentation.tgz
+      filename: app-documentation-$GITHUB_RELEASE_VERSION.tgz
