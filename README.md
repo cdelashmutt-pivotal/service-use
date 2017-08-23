@@ -3,14 +3,14 @@
 A cf CLI plugin to display info about service use
 
 ## Installation
-### Install from pre-built binaries
-1. `git clone https://github.com/cdelashmutt-pivotal/service-use`
-2. `cd service-use`
-3. `cd bin`
-4. Now cd to the appropriate architecture for your machine.
-5. Install the plugin.
-  * Mac/Linux: `cf install-plugin service-use`
-  * Windows: `cf install-plugin service-use.exe`
+### Install from CF Community Plugins Repo
+1. `cf install-plugin -r CF-Community "service-use"`
+
+### Install from project releases section
+1. Download the version of plugin for your architecture from the "Releases" tab of the service-use project.
+2. If you are on Linux or Mac, you will need to `chmod +x` the file you downloaded.
+3. If you already had the plugin installed, uninstall it first with `cf uninstall-plugin ServiceUsePlugin`
+4. Now, install the plugin with `cf install-plugin <path-to-downloaded-plugin>` replacing `<path-to-downloaded-plugin>` with the path to the plugin binary you downloaded.
 
 ## Usage
 Calling `cf service-use` will print out a report of all the Services and their Plans, with the instances that have been created of those services.  You will see all the services and service instances that you have access to.
