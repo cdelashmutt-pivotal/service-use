@@ -1,6 +1,6 @@
 # service-use 
-
-A cf CLI plugin to display info about service use
+A cf CLI plugin to display info about service use.
+[![wercker status](https://app.wercker.com/status/757c88a99800e1317f3becdc9410ef4a/s/master "wercker status")](https://app.wercker.com/project/byKey/757c88a99800e1317f3becdc9410ef4a)
 
 ## Installation
 ### Install from CF Community Plugins Repo
