@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	"strings"
 	"github.com/cdelashmutt-pivotal/service-use/apihelper"
+	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/cloudfoundry/cli/plugin"
-        "github.com/cloudfoundry/cli/cf/terminal"
 	"os"
+	"strings"
 )
 
 type ServiceUsePlugin struct {
@@ -16,7 +16,7 @@ type ServiceUsePlugin struct {
 }
 
 func (cmd *ServiceUsePlugin) ServiceUseCommand(args []string) {
-	
+
 	if nil == cmd.cli {
 		fmt.Println("ERROR: CLI Connection is nil!")
 		os.Exit(1)
@@ -28,7 +28,7 @@ func (cmd *ServiceUsePlugin) ServiceUseCommand(args []string) {
 		fmt.Printf("Error checking if you are logged in: %s\n", err)
 		os.Exit(1)
 	}
-	
+
 	if !loggedIn {
 		fmt.Printf("Please login before trying to run this command.\n")
 		os.Exit(1)
@@ -47,7 +47,7 @@ func (cmd *ServiceUsePlugin) ServiceUseCommand(args []string) {
 			fmt.Printf(" Plan %s:\n", terminal.EntityNameColor(serviceplan.name))
 
 			for _, serviceinstance := range serviceplan.serviceinstances {
-				fmt.Printf("  Org: %s, Space: %s, Instance: %s, Managers: [%s]\n", 
+				fmt.Printf("  Org: %s, Space: %s, Instance: %s, Managers: [%s]\n",
 					terminal.EntityNameColor(serviceinstance.space.organization.name),
 					terminal.EntityNameColor(serviceinstance.space.name),
 					terminal.EntityNameColor(serviceinstance.name),
@@ -166,8 +166,8 @@ func (cmd *ServiceUsePlugin) getSpace(spaceURL string) (space, error) {
 }
 
 type organization struct {
-	name string
-        managers []string
+	name     string
+	managers []string
 }
 
 var orgCache map[string]organization = make(map[string]organization)
@@ -189,7 +189,7 @@ func (cmd *ServiceUsePlugin) actualGetOrganization(organizationURL string) (orga
 	orgManagers, err := cmd.getOrgManagers(rawOrg.ManagersURL)
 
 	organization := organization{
-		name: rawOrg.Name,
+		name:     rawOrg.Name,
 		managers: orgManagers,
 	}
 	return organization, nil
@@ -224,7 +224,7 @@ func (cmd *ServiceUsePlugin) GetMetadata() plugin.PluginMetadata {
 		Version: plugin.VersionType{
 			Major: 1,
 			Minor: 0,
-			Build: 1,
+			Build: 2,
 		},
 		Commands: []plugin.Command{
 			plugin.Command{
