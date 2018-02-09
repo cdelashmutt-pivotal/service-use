@@ -167,9 +167,9 @@ func (api *APIHelper) GetSpace(cli plugin.CliConnection, spaceURL string) (Space
 }
 
 type Organization struct {
-	Name string
-	URL  string
-        ManagersURL string
+	Name        string
+	URL         string
+	ManagersURL string
 }
 
 //GetOrganization returns a struct that represents critical fields in the JSON
@@ -183,8 +183,8 @@ func (api *APIHelper) GetOrganization(cli plugin.CliConnection, organizationURL 
 	metadata := theJSON["metadata"].(map[string]interface{})
 
 	organization := Organization{
-		Name: entity["name"].(string),
-		URL:  metadata["url"].(string),
+		Name:        entity["name"].(string),
+		URL:         metadata["url"].(string),
 		ManagersURL: entity["managers_url"].(string),
 	}
 
@@ -198,8 +198,9 @@ type OrgManager struct {
 //GetOrgManagers returns critical fields from the returned JSON
 func (api *APIHelper) GetOrgManagers(cli plugin.CliConnection, orgManagersURL string) ([]OrgManager, error) {
 	orgmanagers, err := processPagedResults(cli, orgManagersURL, func(metadata map[string]interface{}, entity map[string]interface{}) interface{} {
+		username, _ := entity["username"].(string)
 		return OrgManager{
-			UserName:           entity["username"].(string),
+			UserName: username,
 		}
 	})
 
