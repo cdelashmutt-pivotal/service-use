@@ -1,12 +1,15 @@
 package main
 
 import (
+	"bytes"
+	"flag"
 	"fmt"
-	"strings"
-	"github.com/cdelashmutt-pivotal/service-use/apihelper"
-	"github.com/cloudfoundry/cli/plugin"
-        "github.com/cloudfoundry/cli/cf/terminal"
 	"os"
+	"strings"
+
+	"github.com/cdelashmutt-pivotal/service-use/apihelper"
+	"github.com/cloudfoundry/cli/cf/terminal"
+	"github.com/cloudfoundry/cli/plugin"
 )
 
 type ServiceUsePlugin struct {
@@ -15,8 +18,36 @@ type ServiceUsePlugin struct {
 	ui        terminal.UI
 }
 
+// contains CLI flag values
+type flagVal struct {
+	Format string
+}
+
+func ParseFlags(args []string) flagVal {
+	flagSet := flag.NewFlagSet(args[0], flag.ContinueOnError)
+
+	// Create flags
+	format := flagSet.String("f", "format", "-f <csv>")
+
+	err := flagSet.Parse(args[1:])
+	if err != nil {
+
+	}
+
+	return flagVal{
+		Format: string(*format),
+	}
+}
+
+type report struct {
+	services []service
+}
+
 func (cmd *ServiceUsePlugin) ServiceUseCommand(args []string) {
-	
+	var aReport report
+
+	flagVals := ParseFlags(args)
+
 	if nil == cmd.cli {
 		fmt.Println("ERROR: CLI Connection is nil!")
 		os.Exit(1)
@@ -28,34 +59,81 @@ func (cmd *ServiceUsePlugin) ServiceUseCommand(args []string) {
 		fmt.Printf("Error checking if you are logged in: %s\n", err)
 		os.Exit(1)
 	}
-	
+
 	if !loggedIn {
 		fmt.Printf("Please login before trying to run this command.\n")
 		os.Exit(1)
 	}
 
-	username, _ := cmd.cli.Username()
-
-	fmt.Printf("Getting service use information as %s...\n\n",
-		terminal.EntityNameColor(username))
-
 	services, _ := cmd.getServices()
 
-	for _, service := range services {
-		fmt.Printf("Service %s:\n", terminal.EntityNameColor(service.label))
+	aReport.services = services
+
+	username, _ := cmd.cli.Username()
+
+	if flagVals.Format == "csv" {
+		fmt.Println(aReport.CSV())
+	} else {
+		fmt.Println(aReport.String(username))
+	}
+}
+
+func (aReport *report) String(username string) string {
+	var response bytes.Buffer
+
+	response.WriteString(fmt.Sprintf("Getting service use information as %s...\n\n",
+		terminal.EntityNameColor(username)))
+
+	for _, service := range aReport.services {
+		response.WriteString(fmt.Sprintf("Service %s:\n", terminal.EntityNameColor(service.label)))
 		for _, serviceplan := range service.plans {
-			fmt.Printf(" Plan %s:\n", terminal.EntityNameColor(serviceplan.name))
+			response.WriteString(fmt.Sprintf(" Plan %s:\n", terminal.EntityNameColor(serviceplan.name)))
 
 			for _, serviceinstance := range serviceplan.serviceinstances {
-				fmt.Printf("  Org: %s, Space: %s, Instance: %s, Managers: [%s]\n", 
-					terminal.EntityNameColor(serviceinstance.space.organization.name),
-					terminal.EntityNameColor(serviceinstance.space.name),
-					terminal.EntityNameColor(serviceinstance.name),
-					strings.Join(serviceinstance.space.organization.managers, ","))
+				response.WriteString(
+					fmt.Sprintf("  Org: %s, Space: %s, Instance: %s, Managers: [%s]\n",
+						terminal.EntityNameColor(serviceinstance.space.organization.name),
+						terminal.EntityNameColor(serviceinstance.space.name),
+						terminal.EntityNameColor(serviceinstance.name),
+						strings.Join(serviceinstance.space.organization.managers, ",")))
 			}
 		}
-		fmt.Printf("\n")
 	}
+
+	return response.String()
+}
+
+func (aReport *report) CSV() string {
+	var rows = [][]string{}
+	var csv bytes.Buffer
+
+	var headers = []string{"ServiceName", "PlanName", "OrgName", "SpaceName", "InstanceName", "Managers"}
+
+	rows = append(rows, headers)
+
+	for _, service := range aReport.services {
+		for _, plan := range service.plans {
+			for _, serviceinstance := range plan.serviceinstances {
+				serviceResult := []string{
+					service.label,
+					plan.name,
+					serviceinstance.space.organization.name,
+					serviceinstance.space.name,
+					serviceinstance.name,
+					strings.Join(serviceinstance.space.organization.managers, "|"),
+				}
+
+				rows = append(rows, serviceResult)
+			}
+		}
+	}
+
+	for i := range rows {
+		csv.WriteString(strings.Join(rows[i], ", "))
+		csv.WriteString("\n")
+	}
+
+	return csv.String()
 }
 
 type service struct {
@@ -166,8 +244,8 @@ func (cmd *ServiceUsePlugin) getSpace(spaceURL string) (space, error) {
 }
 
 type organization struct {
-	name string
-        managers []string
+	name     string
+	managers []string
 }
 
 var orgCache map[string]organization = make(map[string]organization)
@@ -189,7 +267,7 @@ func (cmd *ServiceUsePlugin) actualGetOrganization(organizationURL string) (orga
 	orgManagers, err := cmd.getOrgManagers(rawOrg.ManagersURL)
 
 	organization := organization{
-		name: rawOrg.Name,
+		name:     rawOrg.Name,
 		managers: orgManagers,
 	}
 	return organization, nil
@@ -223,8 +301,8 @@ func (cmd *ServiceUsePlugin) GetMetadata() plugin.PluginMetadata {
 		Name: "ServiceUsePlugin",
 		Version: plugin.VersionType{
 			Major: 1,
-			Minor: 0,
-			Build: 1,
+			Minor: 2,
+			Build: 0,
 		},
 		Commands: []plugin.Command{
 			plugin.Command{
@@ -234,7 +312,10 @@ func (cmd *ServiceUsePlugin) GetMetadata() plugin.PluginMetadata {
 				// UsageDetails is optional
 				// It is used to show help of usage of each command
 				UsageDetails: plugin.Usage{
-					Usage: "service-use\n   cf service-use",
+					Usage: "cf service-use [-f csv]",
+					Options: map[string]string{
+						"f": "format output as csv",
+					},
 				},
 			},
 		},
