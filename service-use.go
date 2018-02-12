@@ -142,7 +142,7 @@ type service struct {
 }
 
 func (cmd *ServiceUsePlugin) getServices() ([]service, error) {
-	rawServices, err := cmd.apiHelper.GetServices(cmd.cli)
+	rawServices, err := cmd.apiHelper.GetServices()
 	if nil != err {
 		return nil, err
 	}
@@ -170,7 +170,7 @@ type serviceplan struct {
 }
 
 func (cmd *ServiceUsePlugin) getServicePlans(servicePlansURL string) ([]serviceplan, error) {
-	rawServicePlans, err := cmd.apiHelper.GetServicePlans(cmd.cli, servicePlansURL)
+	rawServicePlans, err := cmd.apiHelper.GetServicePlans(servicePlansURL)
 	if nil != err {
 		return nil, err
 	}
@@ -197,7 +197,7 @@ type serviceinstance struct {
 }
 
 func (cmd *ServiceUsePlugin) getServiceInstances(serviceInstancesURL string) ([]serviceinstance, error) {
-	rawServiceInstances, err := cmd.apiHelper.GetServiceInstances(cmd.cli, serviceInstancesURL)
+	rawServiceInstances, err := cmd.apiHelper.GetServiceInstances(serviceInstancesURL)
 	if nil != err {
 		return nil, err
 	}
@@ -226,7 +226,7 @@ type space struct {
 
 func (cmd *ServiceUsePlugin) getSpace(spaceURL string) (space, error) {
 
-	rawSpace, err := cmd.apiHelper.GetSpace(cmd.cli, spaceURL)
+	rawSpace, err := cmd.apiHelper.GetSpace(spaceURL)
 	if nil != err {
 		return space{}, err
 	}
@@ -259,7 +259,7 @@ func (cmd *ServiceUsePlugin) getOrganization(organizationURL string) (organizati
 }
 
 func (cmd *ServiceUsePlugin) actualGetOrganization(organizationURL string) (organization, error) {
-	rawOrg, err := cmd.apiHelper.GetOrganization(cmd.cli, organizationURL)
+	rawOrg, err := cmd.apiHelper.GetOrganization(organizationURL)
 	if nil != err {
 		return organization{}, err
 	}
@@ -274,7 +274,7 @@ func (cmd *ServiceUsePlugin) actualGetOrganization(organizationURL string) (orga
 }
 
 func (cmd *ServiceUsePlugin) getOrgManagers(orgManagersURL string) ([]string, error) {
-	rawOrgManagers, err := cmd.apiHelper.GetOrgManagers(cmd.cli, orgManagersURL)
+	rawOrgManagers, err := cmd.apiHelper.GetOrgManagers(orgManagersURL)
 	if nil != err {
 		return nil, err
 	}
@@ -290,8 +290,8 @@ func (cmd *ServiceUsePlugin) getOrgManagers(orgManagersURL string) ([]string, er
 func (cmd *ServiceUsePlugin) Run(cli plugin.CliConnection, args []string) {
 
 	if args[0] == "service-use" {
-		cmd.apiHelper = &apihelper.APIHelper{}
 		cmd.cli = cli
+		cmd.apiHelper = apihelper.New(cli)
 		cmd.ServiceUseCommand(args)
 	}
 }

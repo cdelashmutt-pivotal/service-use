@@ -1,0 +1,74 @@
+{
+   "total_results": 2,
+   "total_pages": 1,
+   "prev_url": null,
+   "next_url": null,
+   "resources": [
+      {
+         "metadata": {
+            "guid": "fe12bdcf-bb3f-41e1-b027-ef27beb4b1a0",
+            "url": "/v2/services/fe12bdcf-bb3f-41e1-b027-ef27beb4b1a0",
+            "created_at": "2017-09-21T08:00:11Z",
+            "updated_at": "2018-01-28T03:06:24Z"
+         },
+         "entity": {
+            "label": "app-autoscaler",
+            "provider": null,
+            "url": null,
+            "description": "Scales bound applications in response to load",
+            "long_description": null,
+            "version": null,
+            "info_url": null,
+            "active": true,
+            "bindable": true,
+            "unique_id": "6c1d35ca-b696-4e74-a9b9-4a45aab66e7d",
+            "extra": "{\"displayName\":\"App Autoscaler\",\"documentationUrl\":\"https://docs.pivotal.io/pivotalcf/1-11/appsman-services/autoscaler/using-autoscaler.html\",\"longDescription\":\"Instances of this service periodically examine the load of bound applications and scale them in response to load.  Apps are not actually scaled until scaling parameters are set on the service dashboard after binding.  Dashboard also supports scheduling one-time and recurring scaling events for an app.\",\"providerDisplayName\":\"Pivotal\",\"supportUrl\":\"\"}",
+            "tags": [
+               "cfapi",
+               "runtime",
+               "autoscaling"
+            ],
+            "requires": [],
+            "documentation_url": null,
+            "service_broker_guid": "3396db5c-ca87-47aa-8366-e8c86f1ed1ca",
+            "plan_updateable": true,
+            "service_plans_url": "/v2/services/fe12bdcf-bb3f-41e1-b027-ef27beb4b1a0/service_plans"
+         }
+      },
+      {
+         "metadata": {
+            "guid": "23e66b50-9c20-4d05-b457-e31745fbce16",
+            "url": "/v2/services/23e66b50-9c20-4d05-b457-e31745fbce16",
+            "created_at": "2017-09-21T08:28:45Z",
+            "updated_at": "2018-01-26T17:15:14Z"
+         },
+         "entity": {
+            "label": "p-rabbitmq",
+            "provider": null,
+            "url": null,
+            "description": "RabbitMQ service to provide shared instances of this high-performance multi-protocol messaging broker.",
+            "long_description": null,
+            "version": null,
+            "info_url": null,
+            "active": true,
+            "bindable": true,
+            "unique_id": "163b47c6-a2f3-43b1-97f7-b83b37ec8ad3",
+            "extra": "{\"displayName\":\"RabbitMQ\",\"longDescription\":\"RabbitMQ service to provide shared instances of this high-performance multi-protocol messaging broker.\",\"providerDisplayName\":\"Pivotal\",\"documentationUrl\":\"http://docs.pivotal.io\",\"supportUrl\":\"https://support.pivotal.io\"}",
+            "tags": [
+               "rabbitmq",
+               "messaging",
+               "message-queue",
+               "amqp",
+               "stomp",
+               "mqtt",
+               "pivotal"
+            ],
+            "requires": [],
+            "documentation_url": null,
+            "service_broker_guid": "b4c227e8-db1f-4852-bf8d-1bf94448da9a",
+            "plan_updateable": false,
+            "service_plans_url": "/v2/services/23e66b50-9c20-4d05-b457-e31745fbce16/service_plans"
+         }
+      }
+   ]
+}
