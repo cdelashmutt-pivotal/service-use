@@ -1,31 +1,38 @@
 package apihelper
 
 import (
+	"strconv"
+
 	"github.com/cloudfoundry/cli/plugin"
 	"github.com/krujos/cfcurl"
-	"strconv"
 )
 
 //CFAPIHelper to wrap cf curl results
 type CFAPIHelper interface {
-	GetServices(cli plugin.CliConnection) ([]Service, error)
-	GetServicePlans(cli plugin.CliConnection, plansURL string) ([]ServicePlan, error)
-	GetServiceInstances(cli plugin.CliConnection, serviceInstancesURL string) ([]ServiceInstance, error)
-	GetSpace(cli plugin.CliConnection, spaceURL string) (Space, error)
-	GetOrganization(cli plugin.CliConnection, organizationURL string) (Organization, error)
-	GetOrgManagers(cli plugin.CliConnection, orgManagersURL string) ([]OrgManager, error)
+	GetServices() ([]Service, error)
+	GetServicePlans(plansURL string) ([]ServicePlan, error)
+	GetServiceInstances(serviceInstancesURL string) ([]ServiceInstance, error)
+	GetSpace(spaceURL string) (Space, error)
+	GetOrganization(organizationURL string) (Organization, error)
+	GetOrgManagers(orgManagersURL string) ([]OrgManager, error)
 }
 
 //APIHelper implementation
-type APIHelper struct{}
+type APIHelper struct {
+	cli plugin.CliConnection
+}
+
+func New(cli plugin.CliConnection) CFAPIHelper {
+	return &APIHelper{cli}
+}
 
 //Function type to simplify processing paged results
 type process func(metadata map[string]interface{}, entity map[string]interface{}) interface{}
 
 //Base method to process paged results from API calls
-func processPagedResults(cli plugin.CliConnection, url string, fn process) ([]interface{}, error) {
+func (api *APIHelper) processPagedResults(url string, fn process) ([]interface{}, error) {
 
-	theJSON, err := cfcurl.Curl(cli, url)
+	theJSON, err := cfcurl.Curl(api.cli, url)
 	if nil != err {
 		return nil, err
 	}
@@ -34,7 +41,7 @@ func processPagedResults(cli plugin.CliConnection, url string, fn process) ([]in
 	var objects []interface{}
 	for i := 1; i <= pages; i++ {
 		if 1 != i {
-			theJSON, err = cfcurl.Curl(cli, url+"?page="+strconv.Itoa(i))
+			theJSON, err = cfcurl.Curl(api.cli, url+"?page="+strconv.Itoa(i))
 		}
 		for _, o := range theJSON["resources"].([]interface{}) {
 			theObj := o.(map[string]interface{})
@@ -56,8 +63,8 @@ type Service struct {
 }
 
 //GetServices returns a struct that represents critical fields in the JSON
-func (api *APIHelper) GetServices(cli plugin.CliConnection) ([]Service, error) {
-	services, err := processPagedResults(cli, "/v2/services", func(metadata map[string]interface{}, entity map[string]interface{}) interface{} {
+func (api *APIHelper) GetServices() ([]Service, error) {
+	services, err := api.processPagedResults("/v2/services", func(metadata map[string]interface{}, entity map[string]interface{}) interface{} {
 		return Service{
 			Label:           entity["label"].(string),
 			URL:             metadata["url"].(string),
@@ -85,8 +92,8 @@ type ServicePlan struct {
 }
 
 //GetServices returns a struct that represents critical fields in the JSON
-func (api *APIHelper) GetServicePlans(cli plugin.CliConnection, plansURL string) ([]ServicePlan, error) {
-	serviceplans, err := processPagedResults(cli, plansURL, func(metadata map[string]interface{}, entity map[string]interface{}) interface{} {
+func (api *APIHelper) GetServicePlans(plansURL string) ([]ServicePlan, error) {
+	serviceplans, err := api.processPagedResults(plansURL, func(metadata map[string]interface{}, entity map[string]interface{}) interface{} {
 		return ServicePlan{
 			Name:                entity["name"].(string),
 			URL:                 metadata["url"].(string),
@@ -117,8 +124,8 @@ type ServiceInstance struct {
 }
 
 //GetServiceInstances returns a struct that represents critical fields in the JSON
-func (api *APIHelper) GetServiceInstances(cli plugin.CliConnection, serviceInstancesURL string) ([]ServiceInstance, error) {
-	serviceinstances, err := processPagedResults(cli, serviceInstancesURL, func(metadata map[string]interface{}, entity map[string]interface{}) interface{} {
+func (api *APIHelper) GetServiceInstances(serviceInstancesURL string) ([]ServiceInstance, error) {
+	serviceinstances, err := api.processPagedResults(serviceInstancesURL, func(metadata map[string]interface{}, entity map[string]interface{}) interface{} {
 		return ServiceInstance{
 			Name:               entity["name"].(string),
 			URL:                metadata["url"].(string),
@@ -148,8 +155,8 @@ type Space struct {
 }
 
 //GetSpace returns a struct that represents critical fields in the JSON
-func (api *APIHelper) GetSpace(cli plugin.CliConnection, spaceURL string) (Space, error) {
-	theJSON, err := cfcurl.Curl(cli, spaceURL)
+func (api *APIHelper) GetSpace(spaceURL string) (Space, error) {
+	theJSON, err := cfcurl.Curl(api.cli, spaceURL)
 	if nil != err {
 		return Space{}, err
 	}
@@ -173,8 +180,8 @@ type Organization struct {
 }
 
 //GetOrganization returns a struct that represents critical fields in the JSON
-func (api *APIHelper) GetOrganization(cli plugin.CliConnection, organizationURL string) (Organization, error) {
-	theJSON, err := cfcurl.Curl(cli, organizationURL)
+func (api *APIHelper) GetOrganization(organizationURL string) (Organization, error) {
+	theJSON, err := cfcurl.Curl(api.cli, organizationURL)
 	if nil != err {
 		return Organization{}, err
 	}
@@ -196,8 +203,8 @@ type OrgManager struct {
 }
 
 //GetOrgManagers returns critical fields from the returned JSON
-func (api *APIHelper) GetOrgManagers(cli plugin.CliConnection, orgManagersURL string) ([]OrgManager, error) {
-	orgmanagers, err := processPagedResults(cli, orgManagersURL, func(metadata map[string]interface{}, entity map[string]interface{}) interface{} {
+func (api *APIHelper) GetOrgManagers(orgManagersURL string) ([]OrgManager, error) {
+	orgmanagers, err := api.processPagedResults(orgManagersURL, func(metadata map[string]interface{}, entity map[string]interface{}) interface{} {
 		username, _ := entity["username"].(string)
 		return OrgManager{
 			UserName: username,
