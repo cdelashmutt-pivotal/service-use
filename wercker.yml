@@ -33,42 +33,42 @@ build:
         name: sha-1
         code: |
           PLUGIN_NAME=service-use
-          shasum -a 1 ${PLUGIN_NAME}.linux64
-          shasum -a 1 ${PLUGIN_NAME}.linux32
-          shasum -a 1 ${PLUGIN_NAME}.win64
-          shasum -a 1 ${PLUGIN_NAME}.win32
-          shasum -a 1 ${PLUGIN_NAME}.osx
-    
+          shasum -a 1 ${PLUGIN_NAME}.linux64 | tr "." " " | awk "{ print \"  - checksum:\",\$1,\"\n    platform:\",\$3,\"\n    url: https://github.com/cdelashmutt-pivotal/service-use/releases/download/$GITHUB_RELEASE_VERSION/service-use-$GITHUB_RELEASE_VERSION.$3\" }"
+          shasum -a 1 ${PLUGIN_NAME}.linux32 | tr "." " " | awk "{ print \"  - checksum:\",\$1,\"\n    platform:\",\$3,\"\n    url: https://github.com/cdelashmutt-pivotal/service-use/releases/download/$GITHUB_RELEASE_VERSION/service-use-$GITHUB_RELEASE_VERSION.$3\" }"
+          shasum -a 1 ${PLUGIN_NAME}.win64 | tr "." " " | awk "{ print \"  - checksum:\",\$1,\"\n    platform:\",\$3,\"\n    url: https://github.com/cdelashmutt-pivotal/service-use/releases/download/$GITHUB_RELEASE_VERSION/service-use-$GITHUB_RELEASE_VERSION.$3\" }"
+          shasum -a 1 ${PLUGIN_NAME}.win32 | tr "." " " | awk "{ print \"  - checksum:\",\$1,\"\n    platform:\",\$3,\"\n    url: https://github.com/cdelashmutt-pivotal/service-use/releases/download/$GITHUB_RELEASE_VERSION/service-use-$GITHUB_RELEASE_VERSION.$3\" }"
+          shasum -a 1 ${PLUGIN_NAME}.osx | tr "." " " | awk "{ print \"  - checksum:\",\$1,\"\n    platform:\",\$3,\"\n    url: https://github.com/cdelashmutt-pivotal/service-use/releases/download/$GITHUB_RELEASE_VERSION/service-use-$GITHUB_RELEASE_VERSION.$3\" }"
+
     - github-create-release:
       token: $GITHUB_TOKEN
       tag: $GITHUB_RELEASE_VERSION
       title: $GITHUB_RELEASE_VERSION
       draft: true
-      
+
     - github-upload-asset:
       token: $GITHUB_TOKEN
       file: service-use.linux64
       filename: service-use-$GITHUB_RELEASE_VERSION.linux64
       content-type: application/octet-stream
-      
+
     - github-upload-asset:
       token: $GITHUB_TOKEN
       file: service-use.linux32
       filename: service-use-$GITHUB_RELEASE_VERSION.linux32
       content-type: application/octet-stream
-      
+
     - github-upload-asset:
       token: $GITHUB_TOKEN
       file: service-use.win64
       filename: service-use-$GITHUB_RELEASE_VERSION.win64
       content-type: application/octet-stream
-      
+
     - github-upload-asset:
       token: $GITHUB_TOKEN
       file: service-use.win32
       filename: service-use-$GITHUB_RELEASE_VERSION.win32
       content-type: application/octet-stream
-      
+
     - github-upload-asset:
       token: $GITHUB_TOKEN
       file: service-use.osx
