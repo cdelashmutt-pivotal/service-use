@@ -9,5 +9,5 @@ import (
 
 func TestServiceUsePlugin(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "ServiceUsePlugin Suite")
+	RunSpecs(t, "service-use Suite")
 }

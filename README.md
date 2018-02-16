@@ -1,4 +1,4 @@
-# service-use 
+# service-use
 A cf CLI plugin to display info about service use.
 [![wercker status](https://app.wercker.com/status/757c88a99800e1317f3becdc9410ef4a/s/master "wercker status")](https://app.wercker.com/project/byKey/757c88a99800e1317f3becdc9410ef4a)
 
@@ -9,7 +9,7 @@ A cf CLI plugin to display info about service use.
 ### Install from project releases section
 1. Download the version of plugin for your architecture from the "Releases" tab of the service-use project.
 2. If you are on Linux or Mac, you will need to `chmod +x` the file you downloaded.
-3. If you already had the plugin installed, uninstall it first with `cf uninstall-plugin ServiceUsePlugin`
+3. If you already had the plugin installed, uninstall it first with `cf uninstall-plugin service-use`
 4. Now, install the plugin with `cf install-plugin <path-to-downloaded-plugin>` replacing `<path-to-downloaded-plugin>` with the path to the plugin binary you downloaded.
 
 ## Usage

@@ -21,7 +21,7 @@ func slurp(filename string) []string {
 	return b
 }
 
-var _ = Describe("UsageReport", func() {
+var _ = Describe("service-use", func() {
 	var api CFAPIHelper
 	var fakeCliConnection *pluginfakes.FakeCliConnection
 

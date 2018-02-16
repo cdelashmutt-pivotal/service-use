@@ -1,6 +1,8 @@
 package main
 
 import (
+	"errors"
+
 	"github.com/cdelashmutt-pivotal/service-use/apihelper"
 	"github.com/cdelashmutt-pivotal/service-use/apihelper/fakes"
 
@@ -34,6 +36,14 @@ var _ = Describe("ServiceUse", func() {
 			Expect(len(services)).To(Equal(1))
 		})
 
+	})
+
+	Describe("API Call Errors", func() {
+		It("should return an error if /v2/organization call fails", func() {
+			fakeAPI.GetServicesReturns(nil, errors.New("BOOM"))
+			_, err := cmd.getServices()
+			Expect(err).ToNot(BeNil())
+		})
 	})
 
 })

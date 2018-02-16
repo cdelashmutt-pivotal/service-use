@@ -1,3 +1,3 @@
 #!/bin/sh
-cf uninstall-plugin ServiceUsePlugin
+cf uninstall-plugin service-use
 cf install-plugin -f service-use

@@ -298,11 +298,11 @@ func (cmd *ServiceUsePlugin) Run(cli plugin.CliConnection, args []string) {
 
 func (cmd *ServiceUsePlugin) GetMetadata() plugin.PluginMetadata {
 	return plugin.PluginMetadata{
-		Name: "ServiceUsePlugin",
+		Name: "service-use",
 		Version: plugin.VersionType{
 			Major: 1,
 			Minor: 2,
-			Build: 1,
+			Build: 2,
 		},
 		Commands: []plugin.Command{
 			plugin.Command{
